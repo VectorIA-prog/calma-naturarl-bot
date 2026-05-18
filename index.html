@@ -272,10 +272,11 @@ function fechaVencimiento() {
 }
 
 const mainMenuOptions = [
-  { label:'✨ Ver terapias y precios',  value:'ver_terapias' },
-  { label:'📅 Reservar un turno',       value:'reservar' },
-  { label:'🎁 Vouchers de regalo',      value:'vouchers' },
-  { label:'ℹ️ Info del lugar',          value:'info' }
+  { label:'✨ Ver terapias y precios',          value:'ver_terapias' },
+  { label:'📅 Reservar un turno',               value:'reservar' },
+  { label:'🎟️ Tengo un voucher',               value:'tengo_voucher_directo' },
+  { label:'🛍️ Comprar voucher de regalo',       value:'comprar_voucher_directo' },
+  { label:'ℹ️ Info del lugar',                  value:'info' }
 ];
 
 const therapyListOptions = [
@@ -448,7 +449,7 @@ function showConfirmationFlow() {
     );
   }, 8000);
 
-  // 5. Mensaje de recordatorio
+  // 5. Mensaje de recordatorio + info del lugar
   setTimeout(()=>{
     const reminderMsg = esManana
       ? `💌 Como tu turno es a la mañana, te vamos a recordar <b>el día anterior</b> por WhatsApp.`
@@ -458,6 +459,14 @@ function showConfirmationFlow() {
       [{ label:'📅 Reservar otra terapia', value:'nueva_reserva' }]
     );
   }, 11000);
+
+  // 6. Info del lugar (siempre al final de la confirmación)
+  setTimeout(()=>{
+    addBotMessage(
+      `📍 <b>¿Cómo llegar?</b><br><br>📌 <b>Buenos Aires 174, Neuquén Capital</b><br><br>📞 299 328 8602<br>📷 Instagram: @calmanatural_<br><br>Si tenés alguna duda antes de tu turno, escribinos por acá o al número de arriba 🌿`,
+      null, null, false
+    );
+  }, 13500);
 }
 
 // ─── Flujo principal ──────────────────────────────────────────────
@@ -507,6 +516,8 @@ function processChoice(value) {
       if(value==='ver_terapias'){ state.step='therapy_list'; addBotMessage('✨ Estas son nuestras terapias. Tocá la que te interese:', therapyListOptions); }
       else if(value==='reservar'){ state.step='therapy_list'; showTherapyList(); }
       else if(value==='vouchers'){ state.step='vouchers_menu'; showVouchersMenu(); }
+      else if(value==='tengo_voucher_directo'){ showTengoVoucher(); }
+      else if(value==='comprar_voucher_directo'){ state.step='vouchers_list'; showVouchersList(); }
       else if(value==='info'){ showInfo(); }
       break;
 
@@ -691,9 +702,11 @@ function handleDateChoice(value) {
 // ─── Vouchers ─────────────────────────────────────────────────────
 function showVouchersMenu() {
   addBotMessage(
-    '🎁 <b>Vouchers Calma Natural</b><br><br>El regalo perfecto para quien se merece un momento de bienestar ✨<br>Válidos por 3 meses desde la compra.',
-    [{label:'🛍️ Quiero comprar un voucher',value:'ver_vouchers'},
-     {label:'🎟️ Ya tengo un voucher',value:'tengo_voucher'}]
+    '🎁 <b>Vouchers Calma Natural</b><br><br>¿Qué necesitás?',
+    [
+      { label:'🎟️ Ya tengo un voucher — ingresar código', value:'tengo_voucher' },
+      { label:'🛍️ Quiero comprar un voucher', value:'ver_vouchers' }
+    ]
   );
 }
 
