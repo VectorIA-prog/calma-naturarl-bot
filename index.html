@@ -3,283 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chatbot Calma Natural</title>
+<title>Calma Natural - Asistente Virtual</title>
 <link rel="icon" type="image/jpeg" href="logo-calma-natural.jpg">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   body {
     background: linear-gradient(135deg, #e8dfd3 0%, #d4c4b0 100%);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    display: flex; flex-direction: column; align-items: center; padding: 20px;
   }
-  .header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #5c4a3a;
-  }
-  .header h1 { font-family: 'Georgia', serif; font-size: 28px; margin-bottom: 8px; }
-  .header p { font-size: 14px; opacity: 0.8; }
+  .header { text-align: center; margin-bottom: 20px; color: #5c4a3a; }
+  .header h1 { font-family: 'Georgia', serif; font-size: 26px; margin-bottom: 6px; }
+  .header p { font-size: 13px; opacity: 0.8; }
   .phone {
-    width: 100%;
-    max-width: 400px;
-    height: 700px;
-    background: #efeae2;
-    border-radius: 30px;
+    width: 100%; max-width: 400px; height: 720px;
+    background: #efeae2; border-radius: 30px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    overflow: hidden; display: flex; flex-direction: column;
     border: 8px solid #2a2a2a;
   }
   .chat-header {
-    background: #075e54;
-    color: white;
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    background: #075e54; color: white;
+    padding: 12px 15px; display: flex; align-items: center; gap: 12px;
   }
   .avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: white;
-    background-image: url('logo-calma-natural.jpg');
-    background-size: cover;
-    background-position: center;
-    flex-shrink: 0;
-    border: 2px solid white;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: white; background-image: url('logo-calma-natural.jpg');
+    background-size: cover; background-position: center;
+    flex-shrink: 0; border: 2px solid rgba(255,255,255,0.5);
   }
-  .chat-info h3 { font-size: 16px; }
-  .chat-info p { font-size: 12px; opacity: 0.8; }
+  .chat-info h3 { font-size: 15px; font-weight: 600; }
+  .chat-info p { font-size: 11px; opacity: 0.8; }
   .home-btn {
-    margin-left: auto;
-    background: rgba(255,255,255,0.15);
-    border: none;
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
+    margin-left: auto; background: rgba(255,255,255,0.15);
+    border: none; color: white; width: 34px; height: 34px;
+    border-radius: 50%; cursor: pointer; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; transition: background 0.2s;
   }
   .home-btn:hover { background: rgba(255,255,255,0.3); }
   .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(212,175,127,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(139,111,71,0.1) 0%, transparent 50%);
+    flex: 1; overflow-y: auto; padding: 12px;
     background-color: #efeae2;
+    background-image: radial-gradient(circle at 20% 30%, rgba(212,175,127,0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 70%, rgba(139,111,71,0.08) 0%, transparent 50%);
   }
   .msg {
-    max-width: 80%;
-    padding: 8px 12px;
-    margin-bottom: 4px;
-    border-radius: 8px;
-    font-size: 14px;
-    line-height: 1.4;
-    word-wrap: break-word;
-    animation: fadeIn 0.3s ease-in;
+    max-width: 82%; padding: 8px 11px; margin-bottom: 3px;
+    border-radius: 8px; font-size: 13.5px; line-height: 1.45;
+    word-wrap: break-word; animation: fadeIn 0.25s ease-in;
   }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .msg.bot {
-    background: white;
-    align-self: flex-start;
-    margin-right: auto;
-    border-top-left-radius: 2px;
-  }
-  .msg.user {
-    background: #d9fdd3;
-    align-self: flex-end;
-    margin-left: auto;
-    border-top-right-radius: 2px;
-  }
-  .msg-container { display: flex; flex-direction: column; margin-bottom: 8px; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .msg.bot { background: white; margin-right: auto; border-top-left-radius: 2px; }
+  .msg.user { background: #d9fdd3; margin-left: auto; border-top-right-radius: 2px; }
+  .msg-container { display: flex; flex-direction: column; margin-bottom: 6px; }
   .msg-container.user-side { align-items: flex-end; }
-  .msg-time {
-    font-size: 10px;
-    color: #888;
-    margin-top: 2px;
-    text-align: right;
-    padding: 0 4px;
+  .msg-time { font-size: 10px; color: #999; margin-top: 2px; padding: 0 4px; text-align: right; }
+  .msg.bot.img-msg { padding: 3px; max-width: 72%; overflow: hidden; }
+  .msg.bot.img-msg img { width: 100%; border-radius: 6px; display: block; cursor: pointer; }
+
+  /* Tip card */
+  .tip-card {
+    background: linear-gradient(135deg, #fffbea, #fef3c7);
+    border-left: 3px solid #f59e0b; padding: 9px 11px;
+    border-radius: 8px; font-size: 13px; color: #78350f;
+    margin-bottom: 4px; animation: fadeIn 0.25s ease-in; max-width: 82%;
   }
-  .msg.bot.img-msg {
-    padding: 4px;
-    max-width: 75%;
-    background: white;
-    border-radius: 8px;
-    border-top-left-radius: 2px;
-    overflow: hidden;
+
+  /* Status card (simulación de confirmación) */
+  .status-card {
+    background: white; border-radius: 10px; padding: 12px;
+    margin-top: 6px; font-size: 12.5px;
   }
-  .msg.bot.img-msg img {
-    width: 100%;
-    border-radius: 6px;
-    display: block;
-    cursor: pointer;
+  .status-card .status-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 0; border-bottom: 1px solid #f0f0f0;
   }
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 8px;
-    align-self: flex-start;
-    max-width: 90%;
+  .status-card .status-row:last-child { border-bottom: none; }
+  .status-card .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-pending { background: #f59e0b; animation: pulse 1.2s infinite; }
+  .dot-done { background: #22c55e; }
+  .dot-wait { background: #d1d5db; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  /* Voucher card */
+  .voucher-card {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac; border-radius: 10px;
+    padding: 12px; margin-top: 6px; font-size: 13px; color: #14532d;
   }
+  .voucher-card .v-title { font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+  .voucher-card .v-row { padding: 3px 0; color: #166534; }
+
+  /* Bank card */
+  .bank-card {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #93c5fd; border-radius: 10px;
+    padding: 12px; margin-top: 6px; font-size: 13px; color: #1e3a5f;
+  }
+  .bank-card .b-title { font-weight: bold; margin-bottom: 8px; color: #1d4ed8; }
+  .bank-card .b-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(147,197,253,0.4); }
+  .bank-card .b-row:last-child { border-bottom: none; }
+  .bank-card .b-label { opacity: 0.7; }
+  .bank-card .b-value { font-weight: 600; }
+
+  /* Summary */
+  .summary-card {
+    background: linear-gradient(135deg, #f5ebe0, #e8d5b7);
+    padding: 12px; border-radius: 10px; margin-top: 6px;
+    font-size: 13px; color: #5c4a3a;
+  }
+  .summary-card .title { font-weight: bold; margin-bottom: 7px; font-family: 'Georgia', serif; font-size: 14px; }
+  .summary-card .row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .summary-card .total { border-top: 1px solid #b08060; margin-top: 6px; padding-top: 6px; font-weight: bold; }
+
+  /* Calendar */
+  .calendar-card {
+    background: white; border-left: 4px solid #4285f4;
+    padding: 11px; margin-top: 6px; border-radius: 8px; font-size: 12.5px;
+  }
+  .calendar-card .c-title { color: #4285f4; font-size: 11px; margin-bottom: 5px; font-weight: 600; }
+  .calendar-card .c-event { font-weight: bold; color: #222; margin-bottom: 4px; }
+  .calendar-card .c-detail { color: #666; margin-bottom: 2px; }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; align-self: flex-start; max-width: 92%; }
   .option-btn {
-    background: white;
-    border: 1px solid #d4af7f;
-    color: #5c4a3a;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    text-align: left;
-    transition: all 0.2s;
+    background: white; border: 1px solid #d4af7f; color: #5c4a3a;
+    padding: 9px 11px; border-radius: 8px; cursor: pointer; font-size: 13px;
+    text-align: left; transition: all 0.18s;
   }
-  .option-btn:hover {
-    background: #d4af7f;
-    color: white;
-  }
-  .option-btn.home {
-    background: #f5ebe0;
-    border-color: #8b6f47;
-    color: #5c4a3a;
-    font-style: italic;
-    text-align: center;
-    margin-top: 4px;
-  }
-  .option-btn.home:hover {
-    background: #8b6f47;
-    color: white;
-  }
-  .input-area {
-    background: #f0f2f5;
-    padding: 10px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+  .option-btn:hover { background: #d4af7f; color: white; }
+  .option-btn.home { background: #f5ebe0; border-color: #8b6f47; font-style: italic; text-align: center; margin-top: 3px; }
+  .option-btn.home:hover { background: #8b6f47; color: white; }
+  .option-btn.voucher-btn { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+  .option-btn.voucher-btn:hover { background: #22c55e; color: white; }
+  .option-btn.combo-btn { background: #faf5ff; border-color: #a855f7; color: #581c87; }
+  .option-btn.combo-btn:hover { background: #a855f7; color: white; }
+
+  /* Input */
+  .input-area { background: #f0f2f5; padding: 10px; display: flex; gap: 8px; align-items: center; }
   .input-area input {
-    flex: 1;
-    border: none;
-    background: white;
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    outline: none;
+    flex: 1; border: none; background: white; padding: 9px 14px;
+    border-radius: 20px; font-size: 14px; outline: none;
   }
   .input-area button {
-    background: #075e54;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
+    background: #075e54; color: white; border: none;
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px;
   }
-  .typing {
-    display: inline-block;
-    padding: 10px 15px;
-    background: white;
-    border-radius: 8px;
-    border-top-left-radius: 2px;
-  }
+
+  /* Typing */
+  .typing { display: inline-block; padding: 10px 14px; background: white; border-radius: 8px; border-top-left-radius: 2px; }
   .typing span {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: #888;
-    border-radius: 50%;
-    margin: 0 1px;
+    display: inline-block; width: 6px; height: 6px;
+    background: #aaa; border-radius: 50%; margin: 0 1px;
     animation: bounce 1.4s infinite ease-in-out;
   }
   .typing span:nth-child(2) { animation-delay: 0.2s; }
   .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-    30% { transform: translateY(-8px); opacity: 1; }
-  }
-  .calendar-card {
-    background: white;
-    border-left: 4px solid #4285f4;
-    padding: 12px;
-    margin-top: 8px;
-    border-radius: 8px;
-    font-size: 13px;
-  }
-  .calendar-card h4 {
-    color: #4285f4;
-    font-size: 12px;
-    margin-bottom: 6px;
-  }
-  .calendar-card .event-title { font-weight: bold; color: #333; margin-bottom: 4px; }
-  .calendar-card .event-detail { color: #666; font-size: 12px; margin-bottom: 2px; }
-  .summary-card {
-    background: linear-gradient(135deg, #f5ebe0, #e8d5b7);
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 8px;
-    font-size: 13px;
-    color: #5c4a3a;
-  }
-  .summary-card .title { font-weight: bold; margin-bottom: 6px; font-family: 'Georgia', serif; }
-  .summary-card .row { display: flex; justify-content: space-between; padding: 3px 0; }
-  .summary-card .total { border-top: 1px solid #5c4a3a; margin-top: 6px; padding-top: 6px; font-weight: bold; }
-  .controls {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .control-btn {
-    background: #5c4a3a;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 13px;
-  }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:.5;} 30%{transform:translateY(-7px);opacity:1;} }
+
+  /* Controls */
+  .controls { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .control-btn { background: #5c4a3a; color: white; border: none; padding: 9px 18px; border-radius: 20px; cursor: pointer; font-size: 13px; }
   .control-btn:hover { background: #8b6f47; }
-  /* Modal para ver imágenes en grande */
-  .img-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    cursor: pointer;
-  }
+
+  /* Modal */
+  .img-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; align-items: center; justify-content: center; padding: 20px; cursor: pointer; }
   .img-modal.active { display: flex; }
-  .img-modal img {
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: 10px;
-  }
+  .img-modal img { max-width: 100%; max-height: 90vh; border-radius: 10px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🌿 Calma Natural - Chatbot</h1>
-  <p>Asistente virtual con catálogo visual y agendamiento</p>
+  <h1>🌿 Calma Natural</h1>
+  <p>Asistente virtual · Demo completa con flujo de confirmación</p>
 </div>
 
 <div class="phone">
@@ -287,7 +185,7 @@
     <div class="avatar"></div>
     <div class="chat-info">
       <h3>Calma Natural</h3>
-      <p>en línea</p>
+      <p>en línea · responde en minutos</p>
     </div>
     <button class="home-btn" onclick="goHome(true)" title="Volver al inicio">🏠</button>
   </div>
@@ -302,7 +200,6 @@
   <button class="control-btn" onclick="resetChat()">🔄 Reiniciar demo</button>
 </div>
 
-<!-- Modal de imágenes -->
 <div class="img-modal" id="imgModal" onclick="closeModal()">
   <img id="modalImg" src="" alt="">
 </div>
@@ -311,536 +208,680 @@
 const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('userInput');
 
-const therapies = {
-  'californiano': { name: 'Masaje Californiano', price: 80000, duration: 60, img: 'terapias/californiano.jpg' },
-  'sincronizado': { name: 'Masaje Sincronizado', price: 130000, duration: 60, img: 'terapias/sincronizado.jpg' },
-  'drenaje': { name: 'Drenaje Linfático', price: 65000, duration: 60, img: 'terapias/drenaje.jpg' },
-  'vibracional': { name: 'Terapia Vibracional', price: 140000, duration: 75, img: 'terapias/vibracional.jpg' },
-  'reflexologia': { name: 'Reflexología', price: 70000, duration: 60, img: 'terapias/reflexologia.jpg' },
-  'parejas': { name: 'Masaje para Parejas', price: 170000, duration: 60, img: 'terapias/parejas.jpg' },
-  'kaolift': { name: 'Kaolift', price: 80000, duration: 60, img: 'terapias/kaolift.jpg' },
-  'piedras': { name: 'Terapia con Piedras Calientes', price: 150000, duration: 75, img: 'terapias/piedras.jpg' },
-  'embarazadas': { name: 'Masaje para Embarazadas', price: 70000, duration: 60, img: 'terapias/embarazadas.jpg' }
+// ─── Configuración ────────────────────────────────────────────────
+const SABADO_PERMITIDAS = ['sincronizado','piedras','vibracional'];
+const TERAPIAS_INDIVIDUALES = ['californiano','drenaje','reflexologia','kaolift','embarazadas'];
+
+// Horarios: mañana 8-13, tarde 15-19 (bloques de 1:30hs)
+const HORARIOS_MANANA = ['8:00','9:30','11:00','12:30'];
+const HORARIOS_TARDE  = ['15:00','16:30','18:00'];
+
+const BANK_DATA = {
+  cbu:     '⬛ Acá va el CBU',
+  alias:   '⬛ Acá va el alias',
+  titular: '⬛ Acá va el nombre del titular',
+  banco:   '⬛ Acá va el banco'
 };
 
-let state = { step: 'start', booking: {} };
+const therapies = {
+  californiano: { name:'Masaje Californiano',         price:80000,  duration:60, img:'terapias/californiano.jpg' },
+  sincronizado: { name:'Masaje Sincronizado',          price:130000, duration:60, img:'terapias/sincronizado.jpg' },
+  drenaje:      { name:'Drenaje Linfático',            price:65000,  duration:60, img:'terapias/drenaje.jpg' },
+  vibracional:  { name:'Terapia Vibracional',          price:140000, duration:75, img:'terapias/vibracional.jpg' },
+  reflexologia: { name:'Reflexología',                 price:70000,  duration:60, img:'terapias/reflexologia.jpg' },
+  parejas:      { name:'Masaje para Parejas',          price:170000, duration:60, img:'terapias/parejas.jpg' },
+  kaolift:      { name:'Kaolift',                      price:80000,  duration:60, img:'terapias/kaolift.jpg' },
+  piedras:      { name:'Terapia con Piedras Calientes',price:150000, duration:75, img:'terapias/piedras.jpg' },
+  embarazadas:  { name:'Masaje para Embarazadas',      price:70000,  duration:60, img:'terapias/embarazadas.jpg' }
+};
 
+const combos = [
+  { id:'c1', name:'Bienestar Total',       t1:'californiano', t2:'reflexologia', desc:'Relajación profunda + renovación energética desde los pies', precio: therapies.californiano.price + therapies.reflexologia.price, duracion: 120 },
+  { id:'c2', name:'Belleza y Calma',       t1:'kaolift',      t2:'californiano', desc:'Lifting facial + masaje corporal relajante completo',        precio: therapies.kaolift.price + therapies.californiano.price,      duracion: 120 },
+  { id:'c3', name:'Drenaje + Reflexología',t1:'drenaje',      t2:'reflexologia', desc:'Eliminación de toxinas + estimulación de puntos vitales',    precio: therapies.drenaje.price + therapies.reflexologia.price,      duracion: 120 },
+  { id:'c4', name:'Piedras + Vibracional', t1:'piedras',      t2:'vibracional',  desc:'Calor profundo + armonización con cuencos tibetanos',        precio: therapies.piedras.price + therapies.vibracional.price,       duracion: 150 },
+];
+
+const vouchers = [
+  { id:'v1', terapia:'californiano', validez:'3 meses' },
+  { id:'v2', terapia:'sincronizado', validez:'3 meses' },
+  { id:'v3', terapia:'drenaje',      validez:'3 meses' },
+  { id:'v4', terapia:'reflexologia', validez:'3 meses' },
+  { id:'v5', terapia:'kaolift',      validez:'3 meses' },
+  { id:'v6', terapia:'piedras',      validez:'3 meses' },
+  { id:'v7', terapia:'vibracional',  validez:'3 meses' },
+];
+
+// ─── State ────────────────────────────────────────────────────────
+let state = { step:'start', booking:{} };
+
+// ─── Utilidades ───────────────────────────────────────────────────
 function getTime() {
   const d = new Date();
-  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+function isSabado(s) { return s && (s.toLowerCase().includes('sábado')||s.toLowerCase().includes('sabado')); }
+function isManana(t) { return t && parseInt(t.split(':')[0]) < 13; }
+function formatPrice(p) { return '$'+p.toLocaleString('es-AR'); }
+
+// Fecha 3 meses adelante
+function fechaVencimiento() {
+  const d = new Date(); d.setMonth(d.getMonth()+3);
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
 const mainMenuOptions = [
-  { label: '✨ Ver terapias y precios', value: 'ver_terapias' },
-  { label: '📅 Reservar un turno', value: 'reservar' },
-  { label: 'ℹ️ Info del lugar', value: 'info' }
+  { label:'✨ Ver terapias y precios',  value:'ver_terapias' },
+  { label:'📅 Reservar un turno',       value:'reservar' },
+  { label:'🎁 Vouchers de regalo',      value:'vouchers' },
+  { label:'ℹ️ Info del lugar',          value:'info' }
 ];
 
 const therapyListOptions = [
-  { label: '💆 Masaje Californiano - $80.000', value: 'californiano' },
-  { label: '✨ Masaje Sincronizado - $130.000 ⭐', value: 'sincronizado' },
-  { label: '💧 Drenaje Linfático - $65.000', value: 'drenaje' },
-  { label: '🎵 Terapia Vibracional - $140.000', value: 'vibracional' },
-  { label: '👣 Reflexología - $70.000', value: 'reflexologia' },
-  { label: '💑 Masaje para Parejas - $170.000', value: 'parejas' },
-  { label: '🌸 Kaolift (facial) - $80.000', value: 'kaolift' },
-  { label: '🔥 Piedras Calientes - $150.000', value: 'piedras' },
-  { label: '🤰 Masaje Embarazadas - $70.000', value: 'embarazadas' }
+  { label:'💆 Masaje Californiano - $80.000',        value:'californiano' },
+  { label:'✨ Masaje Sincronizado - $130.000 ⭐',    value:'sincronizado' },
+  { label:'💧 Drenaje Linfático - $65.000',          value:'drenaje' },
+  { label:'🎵 Terapia Vibracional - $140.000',       value:'vibracional' },
+  { label:'👣 Reflexología - $70.000',               value:'reflexologia' },
+  { label:'💑 Masaje para Parejas - $170.000',       value:'parejas' },
+  { label:'🌸 Kaolift (facial) - $80.000',           value:'kaolift' },
+  { label:'🔥 Piedras Calientes - $150.000',         value:'piedras' },
+  { label:'🤰 Masaje Embarazadas - $70.000',         value:'embarazadas' },
+  { label:'💜 Combo 2 terapias (2hs) ✨',            value:'ir_combos' }
 ];
 
-function withHomeOption(options) {
-  if (!options) return [{ label: '🏠 Volver al inicio', value: 'menu' }];
-  const hasHome = options.some(o => o.value === 'menu');
-  if (hasHome) return options;
-  return [...options, { label: '🏠 Volver al inicio', value: 'menu' }];
+function withHome(opts) {
+  if (!opts) return [{ label:'🏠 Volver al inicio', value:'menu' }];
+  return opts.some(o=>o.value==='menu') ? opts : [...opts, { label:'🏠 Volver al inicio', value:'menu' }];
 }
 
-function addBotImage(imgSrc) {
-  return new Promise((resolve) => {
-    showTyping();
-    setTimeout(() => {
-      removeTyping();
-      const container = document.createElement('div');
-      container.className = 'msg-container';
-      const msg = document.createElement('div');
-      msg.className = 'msg bot img-msg';
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.alt = 'Terapia';
-      img.onclick = () => openModal(imgSrc);
-      msg.appendChild(img);
-      container.appendChild(msg);
-      const time = document.createElement('div');
-      time.className = 'msg-time';
-      time.textContent = getTime();
-      container.appendChild(time);
-      messagesEl.appendChild(container);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      resolve();
-    }, 600);
-  });
-}
-
-function addBotMessage(text, options = null, extra = null, addHome = true) {
-  showTyping();
-  setTimeout(() => {
-    removeTyping();
-    const container = document.createElement('div');
-    container.className = 'msg-container';
-    const msg = document.createElement('div');
-    msg.className = 'msg bot';
-    msg.innerHTML = text;
-    container.appendChild(msg);
-
-    if (extra) {
-      const extraEl = document.createElement('div');
-      extraEl.innerHTML = extra;
-      extraEl.className = 'msg bot';
-      extraEl.style.padding = '0';
-      extraEl.style.background = 'transparent';
-      container.appendChild(extraEl);
-    }
-
-    const finalOptions = addHome ? withHomeOption(options) : options;
-
-    if (finalOptions) {
-      const optsContainer = document.createElement('div');
-      optsContainer.className = 'options';
-      finalOptions.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn' + (opt.value === 'menu' ? ' home' : '');
-        btn.textContent = opt.label;
-        btn.onclick = () => handleUserChoice(opt.value, opt.label);
-        optsContainer.appendChild(btn);
-      });
-      container.appendChild(optsContainer);
-    }
-
-    const time = document.createElement('div');
-    time.className = 'msg-time';
-    time.textContent = getTime();
-    container.appendChild(time);
-
-    messagesEl.appendChild(container);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }, 800);
-}
-
+// ─── Render helpers ───────────────────────────────────────────────
 function addUserMessage(text) {
-  const container = document.createElement('div');
-  container.className = 'msg-container user-side';
-  const msg = document.createElement('div');
-  msg.className = 'msg user';
-  msg.textContent = text;
-  container.appendChild(msg);
-  const time = document.createElement('div');
-  time.className = 'msg-time';
-  time.textContent = getTime() + ' ✓✓';
-  container.appendChild(time);
-  messagesEl.appendChild(container);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  const c = document.createElement('div'); c.className='msg-container user-side';
+  const m = document.createElement('div'); m.className='msg user'; m.textContent=text;
+  const t = document.createElement('div'); t.className='msg-time'; t.textContent=getTime()+' ✓✓';
+  c.appendChild(m); c.appendChild(t); messagesEl.appendChild(c);
+  messagesEl.scrollTop=messagesEl.scrollHeight;
 }
 
 function showTyping() {
-  const t = document.createElement('div');
-  t.id = 'typing-indicator';
-  t.className = 'msg-container';
-  t.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  messagesEl.appendChild(t);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  const t=document.createElement('div'); t.id='typing-indicator'; t.className='msg-container';
+  t.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  messagesEl.appendChild(t); messagesEl.scrollTop=messagesEl.scrollHeight;
+}
+function removeTyping() { const t=document.getElementById('typing-indicator'); if(t)t.remove(); }
+
+function addBotMessage(text, options=null, extra=null, addHome=true, delay=800) {
+  showTyping();
+  setTimeout(()=>{
+    removeTyping();
+    const c=document.createElement('div'); c.className='msg-container';
+    const m=document.createElement('div'); m.className='msg bot'; m.innerHTML=text;
+    c.appendChild(m);
+    if(extra){ const e=document.createElement('div'); e.innerHTML=extra; e.style.cssText='padding:0;background:transparent;'; c.appendChild(e); }
+    const finalOpts = addHome ? withHome(options) : options;
+    if(finalOpts){
+      const op=document.createElement('div'); op.className='options';
+      finalOpts.forEach(o=>{
+        const b=document.createElement('button');
+        b.className='option-btn'
+          +(o.value==='menu'?' home':'')
+          +(o.value&&o.value.startsWith('voucher_')?' voucher-btn':'')
+          +(o.value&&o.value.startsWith('combo_')?' combo-btn':'');
+        b.textContent=o.label;
+        b.onclick=()=>handleChoice(o.value,o.label);
+        op.appendChild(b);
+      });
+      c.appendChild(op);
+    }
+    const t=document.createElement('div'); t.className='msg-time'; t.textContent=getTime();
+    c.appendChild(t); messagesEl.appendChild(c); messagesEl.scrollTop=messagesEl.scrollHeight;
+  }, delay);
 }
 
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
+function addBotImage(src) {
+  return new Promise(res=>{
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      const c=document.createElement('div'); c.className='msg-container';
+      const m=document.createElement('div'); m.className='msg bot img-msg';
+      const img=document.createElement('img'); img.src=src; img.alt=''; img.onclick=()=>openModal(src);
+      m.appendChild(img); c.appendChild(m);
+      const t=document.createElement('div'); t.className='msg-time'; t.textContent=getTime();
+      c.appendChild(t); messagesEl.appendChild(c); messagesEl.scrollTop=messagesEl.scrollHeight;
+      res();
+    },600);
+  });
 }
 
-function openModal(src) {
-  document.getElementById('modalImg').src = src;
-  document.getElementById('imgModal').classList.add('active');
+function addTip(text) {
+  const c=document.createElement('div'); c.className='msg-container';
+  const t=document.createElement('div'); t.className='tip-card'; t.innerHTML=text;
+  c.appendChild(t); messagesEl.appendChild(c); messagesEl.scrollTop=messagesEl.scrollHeight;
 }
 
-function closeModal() {
-  document.getElementById('imgModal').classList.remove('active');
+function openModal(src){ document.getElementById('modalImg').src=src; document.getElementById('imgModal').classList.add('active'); }
+function closeModal(){ document.getElementById('imgModal').classList.remove('active'); }
+
+// ─── Simulación de confirmación (Opción D) ────────────────────────
+function showConfirmationFlow() {
+  const b = state.booking;
+  const esManana = isManana(b.time);
+
+  // 1. Mensaje inicial
+  addBotMessage(
+    '📨 <b>¡Solicitud recibida!</b><br><br>Le estamos avisando a las terapeutas para confirmar tu turno. Te respondemos en unos minutos 🌿',
+    null, null, false, 800
+  );
+
+  // 2. Mostrar estado "enviando"
+  setTimeout(()=>{
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      const statusHtml = `
+        <div class="status-card">
+          <div class="status-row"><div class="dot dot-done"></div><span>Solicitud enviada a Calma Natural ✓</span></div>
+          <div class="status-row"><div class="dot dot-pending"></div><span>Esperando confirmación de disponibilidad...</span></div>
+          <div class="status-row"><div class="dot dot-wait"></div><span>Evento en calendario pendiente</span></div>
+        </div>`;
+      const c=document.createElement('div'); c.className='msg-container';
+      const m=document.createElement('div'); m.className='msg bot'; m.innerHTML='🔄 <b>Estado de tu reserva:</b>';
+      const e=document.createElement('div'); e.innerHTML=statusHtml; e.style.cssText='padding:0;background:transparent;';
+      const t=document.createElement('div'); t.className='msg-time'; t.textContent=getTime();
+      c.appendChild(m); c.appendChild(e); c.appendChild(t);
+      messagesEl.appendChild(c); messagesEl.scrollTop=messagesEl.scrollHeight;
+    }, 900);
+  }, 2000);
+
+  // 3. Gachi confirma (simulado)
+  setTimeout(()=>{
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      const statusHtml2 = `
+        <div class="status-card">
+          <div class="status-row"><div class="dot dot-done"></div><span>Solicitud enviada a Calma Natural ✓</span></div>
+          <div class="status-row"><div class="dot dot-done"></div><span>✅ Gachi confirmó disponibilidad</span></div>
+          <div class="status-row"><div class="dot dot-pending"></div><span>Creando evento en calendario...</span></div>
+        </div>`;
+      const c=document.createElement('div'); c.className='msg-container';
+      const m=document.createElement('div'); m.className='msg bot'; m.innerHTML='✅ <b>¡Turno confirmado!</b>';
+      const e=document.createElement('div'); e.innerHTML=statusHtml2; e.style.cssText='padding:0;background:transparent;';
+      const t=document.createElement('div'); t.className='msg-time'; t.textContent=getTime();
+      c.appendChild(m); c.appendChild(e); c.appendChild(t);
+      messagesEl.appendChild(c); messagesEl.scrollTop=messagesEl.scrollHeight;
+    }, 900);
+  }, 5000);
+
+  // 4. Resumen final + calendario
+  setTimeout(()=>{
+    const summary = `
+      <div class="summary-card">
+        <div class="title">🌿 Resumen de tu turno</div>
+        <div class="row"><span>Cliente:</span><b>${b.name}</b></div>
+        <div class="row"><span>Terapia:</span><b>${b.therapy.name}</b></div>
+        <div class="row"><span>Fecha:</span><b>${b.date}</b></div>
+        <div class="row"><span>Horario:</span><b>${b.time} hs</b></div>
+        <div class="row"><span>Duración:</span><b>${b.therapy.duration} min</b></div>
+        ${b.preferences ? `<div class="row"><span>Nota:</span><b>${b.preferences}</b></div>` : ''}
+        <div class="row total"><span>Total:</span><span>${formatPrice(b.therapy.price)}</span></div>
+      </div>`;
+
+    const calCard = `
+      <div class="calendar-card">
+        <div class="c-title">📅 Google Calendar · Evento creado automáticamente</div>
+        <div class="c-event">${b.therapy.name}</div>
+        <div class="c-detail">📆 ${b.date} · 🕐 ${b.time} hs</div>
+        <div class="c-detail">📍 Buenos Aires 174, Neuquén</div>
+        <div class="c-detail">⏱️ ${b.therapy.duration} minutos</div>
+        <div class="c-detail" style="margin-top:5px;color:#4285f4;">
+          🔔 Recordatorio: ${esManana ? 'el día anterior por la tarde' : 'el mismo día a la mañana'}
+        </div>
+      </div>`;
+
+    addBotMessage(
+      `🎉 <b>¡Todo listo, ${b.name.split(' ')[0]}!</b><br><br>Tu turno quedó agendado y ya aparece en el calendario de Calma Natural 👇`,
+      null, summary + calCard, false, 800
+    );
+  }, 8000);
+
+  // 5. Mensaje de recordatorio
+  setTimeout(()=>{
+    const reminderMsg = esManana
+      ? `💌 Como tu turno es a la mañana, te vamos a recordar <b>el día anterior</b> por WhatsApp.`
+      : `💌 Como tu turno es a la tarde, te vamos a recordar <b>el mismo día a la mañana</b> por WhatsApp.`;
+    addBotMessage(
+      `${reminderMsg}<br><br>Si necesitás cancelar o reprogramar, avisanos con al menos 4hs de anticipación 🙏<br><br>¡Te esperamos! 🌸`,
+      [{ label:'📅 Reservar otra terapia', value:'nueva_reserva' }]
+    );
+  }, 11000);
 }
 
-function handleUserChoice(value, label) {
-  if (value === 'menu') {
-    addUserMessage(label);
-    setTimeout(() => goHome(false), 300);
+// ─── Flujo principal ──────────────────────────────────────────────
+function handleChoice(value, label) {
+  if(value==='menu'){ addUserMessage(label); setTimeout(()=>goHome(false),300); return; }
+  addUserMessage(label);
+
+  // Handler especial para bloqueo de sábado
+  if(state.step==='sabado_block'){
+    const map={switch_sincronizado:'sincronizado',switch_piedras:'piedras',switch_vibracional:'vibracional'};
+    if(map[value]){
+      const k=map[value];
+      state.booking.therapy=therapies[k]; state.booking.therapyKey=k; state.booking.date='Este sábado';
+      state.step='ask_time';
+      addBotMessage(`Perfecto, cambiamos a <b>${therapies[k].name}</b> para el sábado 🗓️<br>¿En qué horario te queda mejor?`, buildTimeOptions('saturday'));
+    } else if(value==='other_day'){
+      state.step='wait_custom_date';
+      addBotMessage(`Claro, ¿qué día preferís para <b>${state.booking.therapy.name}</b>? 📅<br><br>Escribí la fecha (ej: "martes 24 de junio") o elegí:`,
+        [{label:'⚡ Lo antes posible',value:'lo_antes_posible'}]);
+    }
     return;
   }
 
-  addUserMessage(label);
-  setTimeout(() => processChoice(value), 300);
+  // Botones de fecha rápida que pueden venir desde wait_custom_date
+  if((value==='lo_antes_posible'||value==='saturday') && (state.step==='wait_custom_date'||state.step==='ask_date')){
+    setTimeout(()=>handleDateChoice(value), 300);
+    return;
+  }
+
+  setTimeout(()=>processChoice(value), 300);
+}
+
+function buildTimeOptions(dateVal) {
+  const esSab = dateVal==='saturday' || (dateVal && (dateVal.toLowerCase().includes('sábado') || dateVal.toLowerCase().includes('sabado')));
+  // Terapias que requieren 2 personas → solo tarde
+  const soloTarde = ['sincronizado','vibracional','piedras','combo'].includes(state.booking.therapyKey);
+  const opts = [];
+  if(!esSab && !soloTarde) HORARIOS_MANANA.forEach(h=>opts.push({label:`🌅 ${h} hs`,value:h}));
+  if(esSab && !soloTarde) opts.push({label:'🌅 10:00 hs',value:'10:00'}); // sábado mañana solo terapias individuales
+  HORARIOS_TARDE.forEach(h=>opts.push({label:`🌇 ${h} hs`,value:h}));
+  return opts;
 }
 
 function processChoice(value) {
-  switch(state.step) {
+  switch(state.step){
     case 'welcome':
-      if (value === 'ver_terapias') {
-        state.step = 'therapy_list';
-        addBotMessage(
-          '✨ Estas son nuestras terapias. Tocá la que te interese para ver más detalle y fotos:',
-          therapyListOptions
-        );
-      } else if (value === 'reservar') {
-        state.step = 'therapy_list';
-        showTherapyList();
-      } else if (value === 'info') {
-        addBotMessage(
-          '📍 <b>Calma Natural</b><br>Buenos Aires 174, Neuquén Capital<br>📞 299 328 8602<br>📷 Instagram: @calmanatural_<br><br>Somos Gachi y Valen, terapeutas certificadas en Masaje Californiano, Sincronizado, Kaolift, Drenaje Linfático y otras terapias integradoras 🌿',
-          [
-            { label: '✨ Ver terapias', value: 'ver_terapias' },
-            { label: '📅 Reservar turno', value: 'reservar' }
-          ]
-        );
-        // Mostrar foto de Gachi y Valen
-        setTimeout(() => addBotImage('terapias/gachi-valen.jpg'), 1200);
-        state.step = 'welcome';
-      }
+      if(value==='ver_terapias'){ state.step='therapy_list'; addBotMessage('✨ Estas son nuestras terapias. Tocá la que te interese:', therapyListOptions); }
+      else if(value==='reservar'){ state.step='therapy_list'; showTherapyList(); }
+      else if(value==='vouchers'){ state.step='vouchers_menu'; showVouchersMenu(); }
+      else if(value==='info'){ showInfo(); }
       break;
 
     case 'therapy_list':
-      const therapy = therapies[value];
-      if (therapy) {
-        state.booking.therapy = therapy;
-        state.step = 'therapy_detail';
-        showTherapyDetail(therapy, value);
+      if(value==='ir_combos'){ state.step='combos_list'; showCombosList(); break; }
+      if(therapies[value]){
+        state.booking.therapy=therapies[value]; state.booking.therapyKey=value;
+        state.step='therapy_detail'; showTherapyDetail(therapies[value],value);
       }
       break;
 
     case 'therapy_detail':
-      if (value === 'reservar') {
-        state.step = 'ask_date';
-        addBotMessage(
-          '¡Genial! Vamos a agendar tu turno 📅<br>¿Qué día te gustaría venir?',
-          [
-            { label: 'Mañana', value: 'tomorrow' },
-            { label: 'Pasado mañana', value: 'day_after' },
-            { label: 'Este sábado', value: 'saturday' },
-            { label: 'Otro día (escribir)', value: 'custom_date' }
-          ]
-        );
-      } else if (value === 'volver') {
-        state.step = 'therapy_list';
-        showTherapyList();
-      }
+      if(value==='reservar'){ state.step='ask_date'; showAskDate(); }
+      else if(value==='volver'){ state.step='therapy_list'; showTherapyList(); }
       break;
 
-    case 'ask_date':
-      const dates = { tomorrow: 'Mañana', day_after: 'Pasado mañana', saturday: 'Este sábado' };
-      const dateLabel = dates[value] || value;
-      state.booking.date = dateLabel;
-
-      if (value === 'custom_date') {
-        addBotMessage('Por favor escribime el día que preferís (ej: "viernes 16 de mayo") 📆');
-        state.step = 'wait_custom_date';
-      } else {
-        state.step = 'ask_time';
-        addBotMessage(
-          `Perfecto, ${dateLabel} 🗓️<br>¿En qué horario te queda mejor?`,
-          [
-            { label: '🌅 Mañana (10:00)', value: '10:00' },
-            { label: '☀️ Mediodía (12:00)', value: '12:00' },
-            { label: '🌤️ Tarde (15:00)', value: '15:00' },
-            { label: '🌇 Tarde-noche (18:00)', value: '18:00' }
-          ]
-        );
-      }
+    case 'combos_list':
+      const combo=combos.find(c=>c.id===value);
+      if(combo){ state.booking.combo=combo; state.step='combo_detail'; showComboDetail(combo); }
       break;
 
+    case 'combo_detail':
+      if(value==='reservar_combo'){ state.booking.therapy={ name:state.booking.combo.name, price:state.booking.combo.precio, duration:state.booking.combo.duracion, img:null }; state.booking.therapyKey='combo'; state.step='ask_date'; showAskDate(); }
+      else if(value==='volver_combos'){ state.step='combos_list'; showCombosList(); }
+      break;
+
+    case 'ask_date': handleDateChoice(value); break;
     case 'ask_time':
-      state.booking.time = value;
-      state.step = 'ask_name';
-      addBotMessage('¡Excelente! Para confirmar tu reserva, ¿me decís tu nombre completo? 🌸');
+      state.booking.time=value; state.step='ask_preferences';
+      addBotMessage('¿Tenés alguna preferencia especial para las terapeutas? 🌸',
+        [{label:'💪 Busco más presión / estoy muy contracturada',value:'pref_presion'},
+         {label:'🌸 Prefiero tacto muy suave',value:'pref_suave'},
+         {label:'✅ Sin preferencias especiales',value:'pref_skip'}]);
+      break;
+
+    case 'ask_preferences':
+      state.booking.preferences = value==='pref_presion' ? 'Busca más presión / muy contracturada'
+                                 : value==='pref_suave'   ? 'Prefiere tacto muy suave'
+                                 : null;
+      state.step='ask_name';
+      addBotMessage('¡Perfecto! Por último, ¿me decís tu nombre completo? 🌸');
       break;
 
     case 'confirm':
-      if (value === 'confirmar') {
-        state.step = 'done';
-        showConfirmation();
-      } else if (value === 'cancelar') {
-        goHome(false);
-      }
+      if(value==='confirmar'){ state.step='done'; showConfirmationFlow(); }
+      else if(value==='cancelar'){ goHome(false); }
       break;
 
     case 'done':
-      if (value === 'nueva_reserva') {
-        state.step = 'therapy_list';
-        state.booking = {};
-        showTherapyList();
+      if(value==='nueva_reserva'){ state.step='therapy_list'; state.booking={}; showTherapyList(); }
+      break;
+
+    // Vouchers
+    case 'vouchers_menu':
+      if(value==='ver_vouchers'){ state.step='vouchers_list'; showVouchersList(); }
+      else if(value==='tengo_voucher'){ showTengoVoucher(); }
+      break;
+
+    case 'vouchers_list':
+      if(value&&value.startsWith('voucher_')){
+        const v=vouchers.find(x=>`voucher_${x.id}`===value);
+        if(v){ state.selectedVoucher=v; state.step='voucher_detail'; showVoucherDetail(v); }
       }
+      break;
+
+    case 'voucher_detail':
+      if(value==='quiero_voucher'){ showBankData(state.selectedVoucher); state.step='vouchers_list'; }
+      else if(value==='volver_vouchers'){ state.step='vouchers_list'; showVouchersList(); }
+      break;
+
+    case 'wait_voucher_code':
+      // Handled in sendUserMessage
       break;
   }
 }
 
+// ─── Terapias ─────────────────────────────────────────────────────
 function showTherapyList() {
-  addBotMessage(
-    '✨ Tocá la terapia que te interese:',
-    therapyListOptions
-  );
+  addBotMessage('✨ Tocá la terapia que te interese:', therapyListOptions);
 }
+
+const descriptions = {
+  californiano:'Técnica holística con movimientos largos, fluidos y armoniosos. Elimina el estrés y libera tensiones musculares.',
+  sincronizado:'⭐ <b>Exclusiva en Calma Natural.</b> Dos terapeutas en sincronía perfecta. Resultados de 2 horas en solo 60 min.',
+  drenaje:'Estimula el sistema linfático para mejorar la circulación y eliminar líquidos. Ideal para retención, post quirúrgico y celulitis.',
+  vibracional:'Cuencos tibetanos + masaje manual con 2 terapeutas. Armonización profunda de cuerpo y mente. Ideal para ansiedad y estrés.',
+  reflexologia:'Estimulación de puntos específicos en los pies que se conectan con diferentes órganos. Equilibra energía y mejora circulación.',
+  parejas:'Experiencia íntima para disfrutar con tu pareja o amiga. Masaje californiano adaptado para dos cuerpos. Ideal para regalar 🎁',
+  kaolift:'Lifting manual facial. Tonifica y revitaliza la piel, estimula colágeno. Ideal para bruxismo y signos de fatiga.',
+  piedras:'Masaje sincronizado + piedras volcánicas calientes. Relajación profunda, alivio de contracturas y armonización energética.',
+  embarazadas:'Terapia segura desde el 4to mes (con autorización obstétrica). Alivia dolores de espalda, hinchazón y favorece el descanso.'
+};
 
 async function showTherapyDetail(therapy, key) {
-  const descriptions = {
-    californiano: 'Técnica de masaje holística, con movimientos largos, fluidos y armoniosos que relajan y descontracturan. Ayuda a eliminar el estrés y libera las tensiones musculares.',
-    sincronizado: '⭐ <b>Nuestra terapia estrella - Exclusiva en Calma Natural</b><br>Dos terapeutas trabajando en forma sincronizada. Resultados similares a un masaje de 2 horas en solo 60 minutos. Técnicas suaves y sutiles, gran poder miorelajante y antiestrés.',
-    drenaje: 'Estimula el sistema linfático para mejorar la circulación y eliminación de líquidos. Ideal para retención de líquidos, post quirúrgico, linfedema o mejorar la apariencia de la celulitis.',
-    vibracional: 'Terapia con cuencos tibetanos + masaje manual con 2 terapeutas. Las vibraciones ayudan a la relajación y armonización del cuerpo y la mente. Ideal para reducir estrés y ansiedad.',
-    reflexologia: 'Estimulación de puntos específicos en los pies conectados con diferentes órganos. Ayuda a reducir el estrés, mejorar la circulación y equilibrar la energía.',
-    parejas: 'Experiencia íntima para disfrutar con tu pareja, amiga o quien quieras. Adaptación del masaje californiano para trabajar en sintonía con ambos cuerpos. Ideal para regalar 🎁',
-    kaolift: 'Lifting manual facial. Tonifica, reafirma y revitaliza la piel del rostro. Estimula colágeno y elastina. Ideal para aliviar bruxismo y rejuvenecer la piel.',
-    piedras: 'Combinación de masaje sincronizado + piedras volcánicas calientes. Relajación profunda, alivio de contracturas y armonización energética.',
-    embarazadas: 'Terapia segura a partir del 4to mes (con autorización obstétrica). Alivia dolores de espalda, mejora circulación, reduce hinchazón y favorece la elasticidad de la piel.'
-  };
-
-  // Primero la foto
   await addBotImage(therapy.img);
-
-  // Después la descripción y opciones
-  setTimeout(() => {
+  if(TERAPIAS_INDIVIDUALES.includes(key)){
+    setTimeout(()=>addTip('💡 <b>¿Buscás más presión, estás muy contracturada o sos una persona grande?</b> Te recomendamos el <b>Masaje Sincronizado</b> — dos terapeutas, resultados más profundos.'), 500);
+  }
+  setTimeout(()=>{
     addBotMessage(
-      `<b>${therapy.name}</b><br><br>${descriptions[key]}<br><br>⏱️ <b>Duración:</b> ${therapy.duration} min<br>💰 <b>Inversión:</b> $${therapy.price.toLocaleString('es-AR')}`,
-      [
-        { label: '✅ Reservar esta terapia', value: 'reservar' },
-        { label: '← Ver otras terapias', value: 'volver' }
-      ]
+      `<b>${therapy.name}</b><br><br>${descriptions[key]}<br><br>⏱️ <b>Duración:</b> ${therapy.duration} min<br>💰 <b>Inversión:</b> ${formatPrice(therapy.price)}`,
+      [{label:'✅ Reservar esta terapia',value:'reservar'},{label:'← Ver otras terapias',value:'volver'}]
     );
-  }, 400);
+  }, TERAPIAS_INDIVIDUALES.includes(key) ? 1100 : 400);
 }
 
-function showConfirmation() {
-  const b = state.booking;
-  const calEvent = `
-    <div class="calendar-card">
-      <h4>📅 Google Calendar - Evento creado</h4>
-      <div class="event-title">${b.therapy.name} - ${b.name}</div>
-      <div class="event-detail">📆 ${b.date} • 🕐 ${b.time} hs</div>
-      <div class="event-detail">📍 Buenos Aires 174, Neuquén</div>
-      <div class="event-detail">⏱️ ${b.therapy.duration} minutos</div>
-      <div class="event-detail" style="margin-top:6px; color:#4285f4;">🔔 Recordatorios: 24hs antes y 1h antes</div>
-    </div>
-  `;
+// ─── Combos ───────────────────────────────────────────────────────
+function showCombosList() {
+  const opts = combos.map(c=>({ label:`💜 ${c.name} — ${formatPrice(c.precio)}`, value:c.id }));
+  addBotMessage('💆 <b>Combos de 2 terapias (2 horas)</b><br><br>Viví una experiencia completa combinando dos terapias en una sola sesión ✨<br>Elegí el que más te guste:', opts);
+}
 
-  const summary = `
-    <div class="summary-card">
-      <div class="title">🌿 Resumen de tu reserva</div>
-      <div class="row"><span>Cliente:</span><b>${b.name}</b></div>
-      <div class="row"><span>Terapia:</span><b>${b.therapy.name}</b></div>
-      <div class="row"><span>Fecha:</span><b>${b.date}</b></div>
-      <div class="row"><span>Horario:</span><b>${b.time} hs</b></div>
-      <div class="row"><span>Duración:</span><b>${b.therapy.duration} min</b></div>
-      <div class="row total"><span>Total:</span><span>$${b.therapy.price.toLocaleString('es-AR')}</span></div>
-    </div>
-  `;
-
+function showComboDetail(combo) {
+  const t1=therapies[combo.t1], t2=therapies[combo.t2];
   addBotMessage(
-    '🎉 <b>¡Listo, tu turno está confirmado!</b><br><br>Ya agendamos tu cita y te enviamos recordatorios automáticos a tu calendario 👇',
-    null,
-    summary + calEvent,
-    false
+    `<b>Combo ${combo.name}</b><br><br>${combo.desc}<br><br>🌿 <b>Incluye:</b><br>• ${t1.name} (${t1.duration} min)<br>• ${t2.name} (${t2.duration} min)<br><br>⏱️ <b>Duración total:</b> ${combo.duracion} min<br>💰 <b>Inversión:</b> ${formatPrice(combo.precio)}`,
+    [{label:'✅ Reservar este combo',value:'reservar_combo'},{label:'← Ver otros combos',value:'volver_combos'}]
   );
+}
 
-  setTimeout(() => {
+// ─── Info ─────────────────────────────────────────────────────────
+function showInfo() {
+  addBotMessage(
+    '📍 <b>Calma Natural</b><br>Buenos Aires 174, Neuquén Capital<br>📞 299 328 8602<br>📷 @calmanatural_<br><br>Somos Gachi y Valen, terapeutas certificadas en Masaje Californiano, Sincronizado, Kaolift, Drenaje Linfático y más 🌿',
+    [{label:'✨ Ver terapias',value:'ver_terapias'},{label:'📅 Reservar turno',value:'reservar'}]
+  );
+  setTimeout(()=>addBotImage('terapias/gachi-valen.jpg'), 1200);
+  state.step='welcome';
+}
+
+// ─── Fechas y horarios ────────────────────────────────────────────
+function showAskDate() {
+  state.step = 'wait_custom_date';
+  addBotMessage(
+    '¿Para qué fecha querés el turno? 📅<br><br>Podés escribir el día directamente (ej: <i>"16 de mayo"</i>, <i>"viernes 23"</i>, <i>"16/06"</i>) o elegir:',
+    [
+      { label:'⚡ Lo antes posible', value:'lo_antes_posible' }
+    ]
+  );
+}
+
+function handleDateChoice(value) {
+  if(value==='lo_antes_posible'){
+    // Calcular próximo día hábil
+    const diasSemana=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const mesesNombre=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const proximo = new Date(); proximo.setDate(proximo.getDate()+1);
+    if(proximo.getDay()===0) proximo.setDate(proximo.getDate()+1); // saltar domingo
+    const fechaStr=`${diasSemana[proximo.getDay()]} ${proximo.getDate()} de ${mesesNombre[proximo.getMonth()]}`;
+    state.booking.date = fechaStr;
+    state.step = 'ask_time';
     addBotMessage(
-      `💌 Te llegarán recordatorios automáticos:<br>• 24 horas antes por WhatsApp<br>• 1 hora antes por notificación<br><br>Si necesitás reprogramar o cancelar, escribinos con al menos 4hs de anticipación 🙏<br><br>¡Te esperamos en Calma Natural, ${b.name.split(' ')[0]}! 🌸`,
-      [
-        { label: '📅 Reservar otra terapia', value: 'nueva_reserva' }
-      ]
+      `🔍 Buscando disponibilidad...<br><br>✅ El próximo turno disponible sería el <b>${fechaStr}</b> 🗓️<br><br>¿En qué horario te queda mejor?`,
+      buildTimeOptions('weekday')
     );
-  }, 2500);
+    return;
+  }
+
+  if(value==='saturday'){
+    if(!SABADO_PERMITIDAS.includes(state.booking.therapyKey) && state.booking.therapyKey!=='combo'){
+      state.step='sabado_block';
+      addBotMessage('⚠️ Los sábados solo realizamos <b>Sincronizado, Piedras Calientes y Terapia Vibracional</b>.<br>¿Qué preferís?',
+        [{label:'✨ Cambiar a Sincronizado',value:'switch_sincronizado'},
+         {label:'🔥 Cambiar a Piedras Calientes',value:'switch_piedras'},
+         {label:'🎵 Cambiar a Terapia Vibracional',value:'switch_vibracional'},
+         {label:'📅 Elegir otro día (con mi terapia)',value:'other_day'}],
+        null, false);
+      return;
+    }
+    state.booking.date = 'Este sábado';
+    state.step = 'ask_time';
+    addBotMessage('Perfecto, este sábado 🗓️<br>¿En qué horario te queda mejor?', buildTimeOptions('saturday'));
+    return;
+  }
+
+  // Fecha escrita por el usuario (llega desde sendUserMessage, no desde aquí)
+  state.booking.date = value;
+  state.step = 'ask_time';
+  addBotMessage(`${value} 🗓️<br>¿En qué horario te queda mejor?`, buildTimeOptions(value));
 }
 
-// Parser de fechas: extrae una fecha legible de texto natural
-// Devuelve string formateado ("Viernes 16 de mayo") o null si no entiende
-function parseDate(text) {
-  const meses = {
-    'enero': 0, 'ene': 0,
-    'febrero': 1, 'feb': 1,
-    'marzo': 2, 'mar': 2,
-    'abril': 3, 'abr': 3,
-    'mayo': 4, 'may': 4,
-    'junio': 5, 'jun': 5,
-    'julio': 6, 'jul': 6,
-    'agosto': 7, 'ago': 7,
-    'septiembre': 8, 'sep': 8, 'set': 8,
-    'octubre': 9, 'oct': 9,
-    'noviembre': 10, 'nov': 10,
-    'diciembre': 11, 'dic': 11
-  };
-  const mesesNombre = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-
-  const t = text.toLowerCase().trim();
-  const hoy = new Date();
-  let dia = null, mes = null, anio = hoy.getFullYear();
-
-  // Formato "16 de mayo" o "16 mayo" o "el 16 de mayo"
-  const m1 = t.match(/(\d{1,2})\s*(?:de\s+)?([a-záéíóú]+)/);
-  if (m1) {
-    const d = parseInt(m1[1]);
-    const mesStr = m1[2].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (meses[mesStr] !== undefined && d >= 1 && d <= 31) {
-      dia = d;
-      mes = meses[mesStr];
-    }
-  }
-
-  // Formato "16/5", "16/05", "16-5", "16/05/2026"
-  if (dia === null) {
-    const m2 = t.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);
-    if (m2) {
-      const d = parseInt(m2[1]);
-      const m = parseInt(m2[2]) - 1;
-      if (d >= 1 && d <= 31 && m >= 0 && m <= 11) {
-        dia = d;
-        mes = m;
-        if (m2[3]) {
-          let y = parseInt(m2[3]);
-          if (y < 100) y += 2000;
-          anio = y;
-        }
-      }
-    }
-  }
-
-  // Formato "viernes 16" o solo "16" (asumimos mes actual o próximo)
-  if (dia === null) {
-    const m3 = t.match(/\b(\d{1,2})\b/);
-    if (m3) {
-      const d = parseInt(m3[1]);
-      if (d >= 1 && d <= 31) {
-        dia = d;
-        mes = hoy.getMonth();
-        // Si el día ya pasó este mes, asumimos próximo mes
-        if (d < hoy.getDate()) {
-          mes = (mes + 1) % 12;
-          if (mes === 0) anio++;
-        }
-      }
-    }
-  }
-
-  if (dia === null || mes === null) return null;
-
-  // Construir fecha y validar que sea válida
-  const fecha = new Date(anio, mes, dia);
-  if (fecha.getDate() !== dia || fecha.getMonth() !== mes) return null;
-
-  // Si la fecha ya pasó este año, asumimos el año siguiente
-  if (fecha < new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate())) {
-    fecha.setFullYear(anio + 1);
-  }
-
-  const diaSemana = diasSemana[fecha.getDay()];
-  return `${diaSemana} ${dia} de ${mesesNombre[mes]}`;
+// ─── Vouchers ─────────────────────────────────────────────────────
+function showVouchersMenu() {
+  addBotMessage(
+    '🎁 <b>Vouchers Calma Natural</b><br><br>El regalo perfecto para quien se merece un momento de bienestar ✨<br>Válidos por 3 meses desde la compra.',
+    [{label:'🛍️ Quiero comprar un voucher',value:'ver_vouchers'},
+     {label:'🎟️ Ya tengo un voucher',value:'tengo_voucher'}]
+  );
 }
 
+function showVouchersList() {
+  const opts=vouchers.map(v=>({
+    label:`🎁 ${therapies[v.terapia].name} — ${formatPrice(therapies[v.terapia].price)}`,
+    value:`voucher_${v.id}`
+  }));
+  addBotMessage('¿Para qué terapia querés el voucher?', opts);
+}
+
+function showVoucherDetail(v) {
+  const th=therapies[v.terapia];
+  const voucherHtml=`
+    <div class="voucher-card">
+      <div class="v-title">🎁 Voucher ${th.name}</div>
+      <div class="v-row">🌿 Terapia: <b>${th.name}</b></div>
+      <div class="v-row">⏱️ Duración: <b>${th.duration} minutos</b></div>
+      <div class="v-row">💰 Valor: <b>${formatPrice(th.price)}</b></div>
+      <div class="v-row">📅 Válido hasta: <b>${fechaVencimiento()}</b></div>
+    </div>`;
+  addBotMessage(
+    `<b>Voucher ${th.name}</b><br><br>Una sesión completa de ${th.duration} minutos para disfrutar cuando quieras 💆‍♀️`,
+    [{label:'✅ Quiero este voucher',value:'quiero_voucher'},{label:'← Ver otros',value:'volver_vouchers'}],
+    voucherHtml
+  );
+}
+
+function showBankData(v) {
+  const th=therapies[v.terapia];
+  const bankHtml=`
+    <div class="bank-card">
+      <div class="b-title">💳 Datos para transferir</div>
+      <div class="b-row"><span class="b-label">CBU</span><span class="b-value">${BANK_DATA.cbu}</span></div>
+      <div class="b-row"><span class="b-label">Alias</span><span class="b-value">${BANK_DATA.alias}</span></div>
+      <div class="b-row"><span class="b-label">Titular</span><span class="b-value">${BANK_DATA.titular}</span></div>
+      <div class="b-row"><span class="b-label">Banco</span><span class="b-value">${BANK_DATA.banco}</span></div>
+      <div class="b-row"><span class="b-label">Importe</span><span class="b-value">${formatPrice(th.price)}</span></div>
+    </div>`;
+  addBotMessage(
+    `¡Genial! Para confirmar tu voucher <b>${th.name}</b>:<br><br>📲 Transferí el importe y mandanos el comprobante por este chat. Una vez confirmado te enviamos el código único de tu voucher 🎁`,
+    [{label:'← Ver otros vouchers',value:'volver_vouchers'}],
+    bankHtml
+  );
+}
+
+function showTengoVoucher() {
+  state.step='wait_voucher_code';
+  addBotMessage('¡Genial! Ingresá tu código de voucher para validarlo 🎟️<br><br>(Ej: CN-4X7K2M)');
+}
+
+// ─── Input de texto ───────────────────────────────────────────────
 function sendUserMessage() {
-  const text = inputEl.value.trim();
-  if (!text) return;
+  const text=inputEl.value.trim();
+  if(!text) return;
   addUserMessage(text);
-  inputEl.value = '';
+  inputEl.value='';
 
-  if (state.step === 'ask_name') {
-    state.booking.name = text;
-    state.step = 'confirm';
-    const b = state.booking;
-    setTimeout(() => {
+  if(state.step==='ask_name'){
+    state.booking.name=text;
+    state.step='confirm';
+    const b=state.booking;
+    setTimeout(()=>{
       addBotMessage(
-        `Perfecto ${text.split(' ')[0]} ✨<br><br>Revisemos tu reserva:<br><br>🌿 <b>${b.therapy.name}</b><br>📅 ${b.date}<br>🕐 ${b.time} hs<br>⏱️ ${b.therapy.duration} minutos<br>💰 $${b.therapy.price.toLocaleString('es-AR')}<br><br>¿Confirmamos?`,
-        [
-          { label: '✅ Sí, confirmar reserva', value: 'confirmar' },
-          { label: '❌ Cancelar', value: 'cancelar' }
-        ]
+        `Perfecto ${text.split(' ')[0]} ✨<br><br>Revisemos tu solicitud:<br><br>🌿 <b>${b.therapy.name}</b><br>📅 ${b.date}<br>🕐 ${b.time} hs<br>⏱️ ${b.therapy.duration} min<br>💰 ${formatPrice(b.therapy.price)}${b.preferences?`<br>📝 ${b.preferences}`:''}`,
+        [{label:'✅ Enviar solicitud',value:'confirmar'},{label:'❌ Cancelar',value:'cancelar'}]
       );
-    }, 300);
-  } else if (state.step === 'wait_custom_date') {
-    const parsedDate = parseDate(text);
-    if (parsedDate) {
-      state.booking.date = parsedDate;
-      state.step = 'ask_time';
-      setTimeout(() => {
-        addBotMessage(
-          `Perfecto, ${parsedDate} 🗓️<br>¿En qué horario te queda mejor?`,
-          [
-            { label: '🌅 Mañana (10:00)', value: '10:00' },
-            { label: '☀️ Mediodía (12:00)', value: '12:00' },
-            { label: '🌤️ Tarde (15:00)', value: '15:00' },
-            { label: '🌇 Tarde-noche (18:00)', value: '18:00' }
-          ]
-        );
-      }, 300);
+    },300);
+
+  } else if(state.step==='wait_custom_date'){
+    const parsed=parseDate(text);
+    if(parsed){
+      if(isSabado(parsed)&&!SABADO_PERMITIDAS.includes(state.booking.therapyKey)&&state.booking.therapyKey!=='combo'){
+        state.step='sabado_block';
+        addBotMessage('⚠️ Los sábados solo: <b>Sincronizado, Piedras Calientes y Terapia Vibracional</b>.',
+          [{label:'✨ Cambiar a Sincronizado',value:'switch_sincronizado'},
+           {label:'🔥 Cambiar a Piedras Calientes',value:'switch_piedras'},
+           {label:'🎵 Cambiar a Terapia Vibracional',value:'switch_vibracional'},
+           {label:'📅 Elegir otro día',value:'other_day'}],null,false);
+        return;
+      }
+      state.booking.date=parsed; state.step='ask_time';
+      addBotMessage(`${parsed} 🗓️ ¿En qué horario te queda mejor?`, buildTimeOptions(parsed));
     } else {
-      setTimeout(() => {
-        addBotMessage(
-          'Ups, no pude entender bien la fecha 🌿<br>¿Podrías escribirla en alguno de estos formatos?<br><br>• "16 de mayo"<br>• "viernes 16"<br>• "16/05"<br><br>O elegí una opción rápida:',
-          [
-            { label: 'Mañana', value: 'tomorrow' },
-            { label: 'Pasado mañana', value: 'day_after' },
-            { label: 'Este sábado', value: 'saturday' }
-          ]
-        );
-        // Mantenemos el paso en wait_custom_date para que pueda reintentar escribiendo,
-        // pero también permitimos que use los botones rápidos
-        state.step = 'ask_date';
-      }, 300);
+      addBotMessage('No entendí la fecha 🌿<br>Podés escribirla así: <i>"16 de mayo"</i>, <i>"viernes 16"</i> o <i>"16/05"</i><br>O elegí:',
+        [{label:'⚡ Lo antes posible',value:'lo_antes_posible'}]);
     }
-  } else if (state.step === 'start' || state.step === 'welcome') {
-    setTimeout(() => {
+
+  } else if(state.step==='wait_voucher_code'){
+    const code=text.toUpperCase().trim();
+    // Simulación: código válido si tiene formato XX-XXXXXX
+    if(/^[A-Z]{2}-[A-Z0-9]{6}$/.test(code)){
       addBotMessage(
-        'Tocá una de las opciones del menú para que pueda ayudarte mejor 🌿',
-        mainMenuOptions,
-        null,
-        false
+        `✅ <b>Código ${code} válido</b><br><br>Tu voucher está activo. ¿Querés reservar tu turno ahora?`,
+        [{label:'📅 Reservar turno con voucher',value:'reservar'}]
       );
-    }, 300);
+      state.step='welcome';
+    } else {
+      addBotMessage('No encontré ese código. Revisá que esté bien escrito (ej: CN-4X7K2M) o escribinos al 299 328 8602 🌿');
+    }
+
+  } else if(state.step==='start'||state.step==='welcome'){
+    addBotMessage('Tocá una opción del menú para que pueda ayudarte 🌿', mainMenuOptions, null, false);
   } else {
-    setTimeout(() => {
-      addBotMessage('Tocá una de las opciones de abajo para continuar 🌿');
-    }, 300);
+    addBotMessage('Tocá una de las opciones de abajo para continuar 🌿');
   }
 }
 
-inputEl.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendUserMessage();
-});
+inputEl.addEventListener('keypress', e=>{ if(e.key==='Enter') sendUserMessage(); });
 
-function startConversation() {
-  state = { step: 'start', booking: {} };
+// ─── Parser de fechas ─────────────────────────────────────────────
+function parseDate(text){
+  const meses={'enero':0,'ene':0,'febrero':1,'feb':1,'marzo':2,'mar':2,'abril':3,'abr':3,'mayo':4,'may':4,'junio':5,'jun':5,'julio':6,'jul':6,'agosto':7,'ago':7,'septiembre':8,'sep':8,'set':8,'octubre':9,'oct':9,'noviembre':10,'nov':10,'diciembre':11,'dic':11};
+  const mn=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const ds=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+  // Días de la semana en español → número (0=dom ... 6=sáb)
+  const diasSemanaMap = {
+    'domingo':0,'lunes':1,'martes':2,'miercoles':3,'miércoles':3,
+    'jueves':4,'viernes':5,'sabado':6,'sábado':6
+  };
+
+  const t=text.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const hoy=new Date();
+  let dia=null,mes=null,anio=hoy.getFullYear();
+
+  // ── NUEVO: solo nombre de día de la semana (ej: "viernes", "el lunes") ──
+  // Busca si el texto contiene SOLO un nombre de día sin número
+  for(const [nombre, numDia] of Object.entries(diasSemanaMap)){
+    // Coincidencia de palabra completa
+    const regex = new RegExp(`\\b${nombre}\\b`);
+    if(regex.test(t) && !/\d/.test(t)){
+      // Calcular el próximo día de esa semana a partir de mañana
+      const proximo = new Date(hoy);
+      proximo.setDate(proximo.getDate() + 1); // empezamos desde mañana
+      let intentos = 0;
+      while(proximo.getDay() !== numDia && intentos < 7){
+        proximo.setDate(proximo.getDate() + 1);
+        intentos++;
+      }
+      return `${ds[proximo.getDay()]} ${proximo.getDate()} de ${mn[proximo.getMonth()]}`;
+    }
+  }
+
+  // ── Parser original ──
+  const orig = text.toLowerCase().trim();
+  const m1=orig.match(/(\d{1,2})\s*(?:de\s+)?([a-záéíóú]+)/);
+  if(m1){const d=parseInt(m1[1]);const ms=m1[2].normalize('NFD').replace(/[\u0300-\u036f]/g,'');if(meses[ms]!==undefined&&d>=1&&d<=31){dia=d;mes=meses[ms];}}
+  if(dia===null){const m2=orig.match(/(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{2,4}))?/);if(m2){const d=parseInt(m2[1]),m=parseInt(m2[2])-1;if(d>=1&&d<=31&&m>=0&&m<=11){dia=d;mes=m;if(m2[3]){let y=parseInt(m2[3]);if(y<100)y+=2000;anio=y;}}}}
+  if(dia===null){
+    // Número solo — pero primero verificar si hay nombre de día con número (ej: "viernes 16")
+    const conDia = orig.match(/(?:lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)\s+(\d{1,2})/);
+    if(conDia){
+      const d=parseInt(conDia[1]);
+      if(d>=1&&d<=31){ dia=d; mes=hoy.getMonth(); if(d<hoy.getDate()){ mes=(mes+1)%12; if(mes===0)anio++; } }
+    } else {
+      const m3=orig.match(/\b(\d{1,2})\b/);
+      if(m3){const d=parseInt(m3[1]);if(d>=1&&d<=31){dia=d;mes=hoy.getMonth();if(d<hoy.getDate()){mes=(mes+1)%12;if(mes===0)anio++;}}}
+    }
+  }
+  if(dia===null||mes===null)return null;
+  const f=new Date(anio,mes,dia);if(f.getDate()!==dia||f.getMonth()!==mes)return null;
+  if(f<new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate()))f.setFullYear(anio+1);
+  return `${ds[f.getDay()]} ${dia} de ${mn[mes]}`;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────
+function startConversation(){
+  state={step:'start',booking:{}};
   addUserMessage('Hola! 👋');
-  setTimeout(() => {
-    state.step = 'welcome';
+  setTimeout(()=>{
+    state.step='welcome';
     addBotMessage(
-      '🌿 ¡Hola! Bienvenida/o a <b>Calma Natural</b> 💆‍♀️✨<br><br>Soy tu asistente virtual. Estoy acá para contarte sobre nuestras terapias y ayudarte a agendar tu momento de bienestar 🌸<br><br>¿En qué puedo ayudarte hoy?',
-      mainMenuOptions,
-      null,
-      false
+      '🌿 ¡Hola! Bienvenida/o a <b>Calma Natural</b> 💆‍♀️✨<br><br>Soy el asistente virtual de Gachi y Valen. Estoy acá para contarte sobre nuestras terapias, ayudarte a reservar tu turno y mucho más 🌸<br><br>¿En qué puedo ayudarte?',
+      mainMenuOptions, null, false
     );
-  }, 600);
+  },600);
 }
 
-function goHome(showUserMsg = true) {
-  if (showUserMsg) addUserMessage('🏠 Volver al inicio');
-  state = { step: 'welcome', booking: {} };
-  setTimeout(() => {
-    addBotMessage(
-      'Volvamos al menú principal 🌿<br><br>¿En qué puedo ayudarte?',
-      mainMenuOptions,
-      null,
-      false
-    );
-  }, 300);
+function goHome(showMsg=true){
+  if(showMsg) addUserMessage('🏠 Volver al inicio');
+  state={step:'welcome',booking:{}};
+  setTimeout(()=>addBotMessage('Volvamos al menú 🌿', mainMenuOptions, null, false), 300);
 }
 
-function resetChat() {
-  messagesEl.innerHTML = '';
-  startConversation();
-}
+function resetChat(){ messagesEl.innerHTML=''; startConversation(); }
 
 startConversation();
 </script>
-
 </body>
 </html>
