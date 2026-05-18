@@ -496,6 +496,19 @@ function handleChoice(value, label) {
     return;
   }
 
+  // Voucher validado → ir a reservar directamente
+  if(value==='ir_a_reservar_voucher'){
+    state.step='ask_date';
+    showAskDate();
+    return;
+  }
+
+  // Reintentar código
+  if(value==='reintentar_codigo'){
+    showTengoVoucher();
+    return;
+  }
+
   setTimeout(()=>processChoice(value), 300);
 }
 
@@ -797,15 +810,43 @@ function sendUserMessage() {
 
   } else if(state.step==='wait_voucher_code'){
     const code=text.toUpperCase().trim();
-    // Simulación: código válido si tiene formato XX-XXXXXX
-    if(/^[A-Z]{2}-[A-Z0-9]{6}$/.test(code)){
+
+    // Base de datos simulada de vouchers (en el bot real esto vendría de Google Sheets)
+    const voucherDB = {
+      'CN-4X7K2M': { terapia:'californiano', regala:'Andrea',    usado:false, vence:'16 de agosto de 2025' },
+      'CN-8P3RNQ': { terapia:'sincronizado', regala:'Mamá',      usado:false, vence:'20 de septiembre de 2025' },
+      'CN-2L9FKT': { terapia:'kaolift',      regala:'Sofía',     usado:false, vence:'5 de julio de 2025' },
+      'CN-7W1XMB': { terapia:'drenaje',      regala:'Valentina', usado:true,  vence:'10 de junio de 2025' },
+    };
+
+    const voucher = voucherDB[code];
+
+    if(voucher && !voucher.usado){
+      const th = therapies[voucher.terapia];
+      state.booking.therapy = th;
+      state.booking.therapyKey = voucher.terapia;
+      state.booking.esVoucher = true;
+      state.step = 'ask_date';
       addBotMessage(
-        `✅ <b>Código ${code} válido</b><br><br>Tu voucher está activo. ¿Querés reservar tu turno ahora?`,
-        [{label:'📅 Reservar turno con voucher',value:'reservar'}]
+        `✅ <b>¡Código válido!</b> 🎁<br><br><b>${voucher.regala} te regaló ${th.name}</b> 💆‍♀️<br><br>⏱️ Duración: ${th.duration} minutos<br>📅 Válido hasta: ${voucher.vence}<br><br>¿Querés reservar tu turno ahora?`,
+        [
+          { label:'📅 Sí, reservar mi turno', value:'ir_a_reservar_voucher' },
+          { label:'Ahora no, gracias', value:'menu' }
+        ],
+        null, false
       );
-      state.step='welcome';
+    } else if(voucher && voucher.usado){
+      addBotMessage(
+        `⚠️ Este voucher ya fue utilizado.<br><br>Si creés que hay un error, escribinos directamente al 299 328 8602 🌿`,
+        null, null, false
+      );
+      state.step = 'welcome';
     } else {
-      addBotMessage('No encontré ese código. Revisá que esté bien escrito (ej: CN-4X7K2M) o escribinos al 299 328 8602 🌿');
+      addBotMessage(
+        'No encontré ese código 🌿<br><br>Revisá que esté bien escrito (ej: <i>CN-4X7K2M</i>) o escribinos al 299 328 8602 si tenés dudas.',
+        [{ label:'🔄 Intentar de nuevo', value:'reintentar_codigo' }],
+        null, false
+      );
     }
 
   } else if(state.step==='start'||state.step==='welcome'){
